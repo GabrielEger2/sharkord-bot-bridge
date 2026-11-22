@@ -2,7 +2,7 @@
   "id": "bot-bridge",
   "name": "Bot Bridge",
   "author": "Gabriel Eger",
-  "description": "A generic bot gateway: forwards a channel's messages to any bot over a webhook, and lets the bot post replies through an authenticated HTTP API.",
+  "description": "A generic bot gateway with Discord-style semantics: @-mention the bot anywhere, events go to the bot's webhook, and the bot answers and manages the server through an authenticated HTTP API.",
   "homepage": "https://github.com/GabrielEger2/sharkord-bot-bridge",
   "logo": "https://placehold.co/100x100/white/black",
   "sdkVersion": 2,
