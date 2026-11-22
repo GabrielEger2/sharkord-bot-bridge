@@ -1,9 +1,9 @@
-# Bot Bridge — a Sharkord plugin
+# Bot Proxy — a Sharkord plugin
 
 Sharkord has no bot accounts, no incoming webhooks, and no outbound event
 push — the plugin SDK is the only door into a server, so every external bot
 (LLM agent, bridge, automation) needs the same bespoke plugin written first.
-Bot Bridge is that plugin, written once and agent-agnostic: it speaks a small
+Bot Proxy is that plugin, written once and agent-agnostic: it speaks a small
 HTTP contract any bot can implement, and makes the bot behave the way a
 Discord bot does. Nothing in it knows what your bot is.
 
@@ -28,7 +28,7 @@ attachments, reactions-as-events and voice are future work.
 
 | Key | Meaning |
 |---|---|
-| Bot name | What users @-mention to call the bot (e.g. `hermes`). A role with this name is created automatically as the mention target. |
+| Bot name | What users @-mention to call the bot (e.g. `ava`). A role with this name is created automatically as the mention target. |
 | Webhook URL | Where to POST events. Empty = forwarding disabled (the API still works). |
 | Forward all messages | Off (default): only messages that @-mention the bot or reply to it are forwarded. On: every user message in every channel, Discord-gateway style — the bot filters. |
 | Outbound secret | Sent as `Authorization: Bearer <s>` on every event POST, so your bot can verify the bridge. |
@@ -37,7 +37,7 @@ attachments, reactions-as-events and voice are future work.
 ## The contract
 
 Typed in [`src/types.ts`](src/types.ts). All routes live under
-`/plugins/bot-bridge/`, bodies are capped at 256 KB.
+`/plugins/bot-proxy/`, bodies are capped at 256 KB.
 
 ### Events your bot receives
 
@@ -53,7 +53,7 @@ prevention), the bridge POSTs to your webhook:
   "channelName": "general",
   "userId": 2,
   "userName": "gabriel",
-  "textContent": "@hermes what's on my watchlist?",
+  "textContent": "@ava what's on my watchlist?",
   "mentioned": true,
   "replyToMessageId": null,
   "ts": "2026-11-22T14:03:11.000Z"
@@ -71,7 +71,7 @@ quickly and do the work after responding.
 ### `POST /send`
 
 ```sh
-curl -X POST https://your-server/plugins/bot-bridge/send \
+curl -X POST https://your-server/plugins/bot-proxy/send \
   -H "Authorization: Bearer $INBOUND_SECRET" \
   -H "Content-Type: application/json" \
   -d '{"channelId": 5, "text": "hello from the bot"}'
@@ -94,7 +94,7 @@ curl -X POST https://your-server/plugins/bot-bridge/send \
 Everything beyond sending — a thin allowlisted façade over the plugin SDK:
 
 ```sh
-curl -X POST https://your-server/plugins/bot-bridge/rpc \
+curl -X POST https://your-server/plugins/bot-proxy/rpc \
   -H "Authorization: Bearer $INBOUND_SECRET" \
   -H "Content-Type: application/json" \
   -d '{"op": "channels.create", "args": {"name": "job-digest", "categoryId": 1}}'
@@ -129,10 +129,10 @@ Moderation (bans, kicks, role assignment) is deliberately not exposed.
 
 ```sh
 curl -H "Authorization: Bearer $INBOUND_SECRET" \
-  https://your-server/plugins/bot-bridge/health
+  https://your-server/plugins/bot-proxy/health
 ```
 
-`{"ok": true, "botName": "hermes", "roleId": 7, "forwarding": true, "forwardAll": false}`
+`{"ok": true, "botName": "ava", "roleId": 7, "forwarding": true, "forwardAll": false}`
 — `roleId` is `null` while the mention role could not be created (plain-text
 `@name` still works), `forwarding` is `false` while no webhook URL is set.
 Auth required, since the response leaks config shape.

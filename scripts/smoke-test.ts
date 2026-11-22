@@ -16,7 +16,7 @@ type THandler = (
 ) => unknown;
 
 const settingsValues: Record<string, unknown> = {
-  botName: "hermes",
+  botName: "ava",
   webhookUrl: "",
   forwardAll: false,
   outboundSecret: "out-secret",
@@ -31,7 +31,7 @@ const createdChannels: unknown[] = [];
 const logs: string[] = [];
 
 const ctx = {
-  pluginId: "bot-bridge",
+  pluginId: "bot-proxy",
   logger: {
     log: (...args: unknown[]) => logs.push(args.join(" ")),
     debug: () => {},
@@ -95,7 +95,7 @@ const ctx = {
     // message 456 is "ours" — a reply to it addresses the bot
     get: async (messageId: number) =>
       messageId === 456
-        ? { id: 456, pluginId: "bot-bridge" }
+        ? { id: 456, pluginId: "bot-proxy" }
         : { id: messageId, pluginId: null },
     edit: async () => {},
     delete: async () => {},
@@ -116,7 +116,7 @@ await onLoad(ctx);
 
 // ---- bot role bootstrap ----
 
-assert.deepEqual(createdRoles, [{ name: "hermes", color: "#5865f2" }]);
+assert.deepEqual(createdRoles, [{ name: "ava", color: "#5865f2" }]);
 
 // the registered handlers behind a real HTTP server, as Sharkord would mount them
 const api = http.createServer((req, res) => {
@@ -171,7 +171,7 @@ assert.equal((await call("GET", "/health")).status, 401);
 const health = await call("GET", "/health", { auth: "in-secret" });
 assert.deepEqual(health.body, {
   ok: true,
-  botName: "hermes",
+  botName: "ava",
   roleId: 7,
   forwarding: false,
   forwardAll: false,
@@ -277,13 +277,13 @@ const emit = (payload: Record<string, unknown>) =>
 
 // never forwarded: a plugin's message, and (with forwardAll off) a message
 // that does not address the bot
-await emit({ messageId: 1, pluginId: "bot-bridge", userId: null, textContent: "@hermes own reply" });
+await emit({ messageId: 1, pluginId: "bot-proxy", userId: null, textContent: "@ava own reply" });
 await emit({ messageId: 2, textContent: "just chatting" });
 assert.equal(received.length, 0);
 
 // addressed by plain-text @name — survives one failed webhook attempt (the
 // first retry fires after 2 s, so this is the slow part of the test)
-await emit({ messageId: 3, textContent: "@hermes hello bot" });
+await emit({ messageId: 3, textContent: "@ava hello bot" });
 
 const event = received[0] as Record<string, unknown>;
 assert.equal(received.length, 1);
@@ -297,7 +297,7 @@ assert.ok(typeof event.ts === "string" && !Number.isNaN(Date.parse(event.ts as s
 await emit({
   messageId: 4,
   textContent: "hey can you make a channel",
-  content: '<p><span data-role-id="7" data-type="role-mention">@hermes</span> hey</p>',
+  content: '<p><span data-role-id="7" data-type="role-mention">@ava</span> hey</p>',
 });
 assert.equal(received.length, 2);
 

@@ -3,7 +3,7 @@ import { PLUGIN_SDK_VERSION } from "@sharkord/plugin-sdk";
 
 const result = await publish({
   githubToken: process.env.GITHUB_TOKEN,
-  repo: "GabrielEger2/sharkord-bot-bridge",
+  repo: "GabrielEger2/sharkord-bot-proxy",
   sdkVersion: PLUGIN_SDK_VERSION,
 });
 

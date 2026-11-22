@@ -523,7 +523,7 @@ const onLoad = async (ctx: PluginContext) => {
     });
   });
 
-  ctx.logger.log("Bot Bridge loaded");
+  ctx.logger.log("Bot Proxy loaded");
 };
 
 const onUnload = (ctx: UnloadPluginContext) => {
@@ -536,7 +536,7 @@ const onUnload = (ctx: UnloadPluginContext) => {
 
   pendingSleeps.clear();
 
-  ctx.logger.log("Bot Bridge unloaded");
+  ctx.logger.log("Bot Proxy unloaded");
 };
 
 const onUpgrade = (ctx: UpgradePluginContext, info: TUpgradeInfo) => {

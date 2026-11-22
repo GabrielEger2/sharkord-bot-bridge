@@ -29,7 +29,7 @@ export type TBridgeEvent = {
   ts: string;
 };
 
-/** Body of `POST /plugins/bot-bridge/send`. Exactly one of `html` | `text`. */
+/** Body of `POST /plugins/bot-proxy/send`. Exactly one of `html` | `text`. */
 export type TSendRequest = {
   /** the channel to post in — any channel on the server */
   channelId: number;
@@ -46,7 +46,7 @@ export type TSendRequest = {
 export type TSendResponse = { ok: true; messageId: number };
 
 /**
- * Body of `POST /plugins/bot-bridge/rpc` — everything beyond sending.
+ * Body of `POST /plugins/bot-proxy/rpc` — everything beyond sending.
  * `op` names an allowlisted SDK call (see README for the full list, e.g.
  * "channels.create", "messages.react"); `args` are its named arguments.
  */
